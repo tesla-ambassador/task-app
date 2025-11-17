@@ -17,3 +17,8 @@ export type Board = {
   name: string;
   columns: Column[];
 };
+
+export type Subtasks = {
+  title: string;
+  isCompleted: boolean;
+};

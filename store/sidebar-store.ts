@@ -13,6 +13,7 @@ export type SidebarActions = {
   deleteBoard: (boardName: string) => void;
   addColumn: (newColumn: Column, boardName: string) => void;
   setActiveIndex: (newIndex: number) => void;
+  setFullWidth: () => void;
 };
 
 export type SidebarStore = SidebarState & SidebarActions;
@@ -51,5 +52,6 @@ export const createSidebarStore = (initState: SidebarState = defaultState) => {
       }),
     setActiveIndex: (number) =>
       set((state) => ({ activeIndex: (state.activeIndex = number) })),
+    setFullWidth: () => set((state) => ({ isFullWidth: !state.isFullWidth })),
   }));
 };
