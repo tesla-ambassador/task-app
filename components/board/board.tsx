@@ -3,6 +3,7 @@ import { Column, Task } from "@/types/boardtypes";
 import { completeSubtasksCounter } from "@/hooks/board-functions";
 import { useSidebarStore } from "@/providers/sidebar-provider";
 import { Button } from "../ui/button";
+import { useTaskStore } from "@/providers/task-provider";
 
 import { EditBoard } from "./edit-board";
 
@@ -15,15 +16,28 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectItem,
+  SelectLabel,
+  SelectContent,
+  SelectGroup,
+} from "../ui/select";
+
+import { Checkbox } from "../ui/checkbox";
+import { Label } from "../ui/label";
+
 export function Board() {
-  const { boards, activeIndex } = useSidebarStore((state) => state);
-  if (boards[activeIndex].columns.length === 0) {
+  const { columns } = useTaskStore((state) => state);
+  if (columns.length === 0) {
     return <EmptyBoard />;
   } else
     return (
       <div className="flex gap-4">
         <div className="flex gap-4 space-y-8">
-          {boards[activeIndex].columns.map((column, index) => (
+          {columns.map((column, index) => (
             <div key={index}>
               <BoardColumn column={column} />
             </div>
@@ -38,40 +52,115 @@ interface ColumnProps {
 }
 export function BoardColumn({ column }: ColumnProps) {
   return (
-    <div className="w-full">
-      <div className="flex items-center gap-4">
-        <ColumnStatusBar task={column.tasks[0]} />
-        <span>
-          {column.name}({column.tasks.length})
-        </span>
-      </div>
-      <div className="mt-6 space-y-4 w-full">
-        {column.tasks.length !== 0 ? (
-          column.tasks.map((task, index) => (
-            <div
-              key={index}
-              className="bg-white w-[280px] py-6 px-4 rounded-md shadow-md"
-            >
-              <h2 className="font-bold text-[0.938rem]">{task.title}</h2>
-              <span className="text-[#828FA3] font-bold text-[0.75rem]">
-                {completeSubtasksCounter(task.subtasks)} of{" "}
-                {task.subtasks.length} subtasks
-              </span>
+    <Dialog>
+      <div className="w-full">
+        <div className="flex items-center gap-4">
+          <div className="w-[20px] h-[20px] rounded-full bg-[#8471F2]" />
+          <span>
+            {column.name} ({column.tasks.length})
+          </span>
+        </div>
+        <div className="mt-6 space-y-4 w-full">
+          {column.tasks.length !== 0 ? (
+            column.tasks.map((task, index) => (
+              <TaskCard key={index} task={task} />
+            ))
+          ) : (
+            <div className="bg-white w-full max-w-[280px] sm:min-w-[280px] py-6 px-4 rounded-md shadow-md text-center mx-auto">
+              <h2 className="text-[0.938rem] font-bold">No tasks yet</h2>
+              <Button
+                variant={"link"}
+                className="cursor-pointer px-7 rounded-lg text-[#635FC7]"
+              >
+                + Add Task
+              </Button>
             </div>
-          ))
-        ) : (
-          <div className="bg-white w-full max-w-[280px] sm:min-w-[280px] py-6 px-4 rounded-md shadow-md text-center mx-auto">
-            <h2 className="text-[0.938rem] font-bold">No tasks yet</h2>
-            <Button
-              variant={"link"}
-              className="cursor-pointer px-7 rounded-lg text-[#635FC7]"
-            >
-              + Add Task
-            </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </Dialog>
+  );
+}
+
+interface TaskCard {
+  task: Task;
+}
+
+export function TaskCard({ task }: TaskCard) {
+  const { toggleSubTask, setStatus } = useTaskStore((state) => state);
+
+  return (
+    <Dialog>
+      <div className="bg-white w-[280px] py-6 px-4 rounded-md shadow-md">
+        <DialogTrigger className="w-full h-full text-start p-0 bg-transparent">
+          <h2 className="font-bold text-[0.938rem]">{task.title}</h2>
+          <span className="text-[#828FA3] font-bold text-[0.75rem]">
+            {completeSubtasksCounter(task.subtasks)} of {task.subtasks.length}{" "}
+            subtasks
+          </span>
+        </DialogTrigger>
+      </div>
+      <DialogContent>
+        <DialogHeader className="sr-only">
+          <DialogTitle>Task Card Expanded</DialogTitle>
+          <DialogDescription>
+            This is an individual task card expanded to show the descriptions
+            and specific subtasks.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-6">
+          <h2 className="font-bold text-[1.125rem]">{task.title}</h2>
+          <p className="text-[0.813rem] text-[#828FA3]">{task.description}</p>
+          <div>
+            <h3 className="text-[#828FA3] font-bold text-[0.75rem]">
+              {completeSubtasksCounter(task.subtasks)} of {task.subtasks.length}{" "}
+              subtasks
+            </h3>
+            <div className="mt-2 space-y-2">
+              {task.subtasks.map((subTask, index) => (
+                <Label
+                  key={index}
+                  htmlFor={subTask.title}
+                  className="flex items-center gap-3 bg-accent p-4 transition-all duration-150 has-[[aria-checked=true]]:text-black/50 has-[[aria-checked=true]]:line-through"
+                >
+                  <Checkbox
+                    id={subTask.title}
+                    checked={subTask.isCompleted}
+                    onCheckedChange={() => {
+                      toggleSubTask(task.title, subTask.title);
+                    }}
+                    className="hover:cursor-pointer"
+                  />
+                  <span>{subTask.title}</span>
+                </Label>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 className="text-[#828FA3] font-bold text-[0.75rem]">
+              Current Status
+            </h3>
+            <Select
+              defaultValue={task.status}
+              onValueChange={(e) => {
+                setStatus(task.title, e);
+              }}
+            >
+              <SelectTrigger className="mt-2 w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value={"Todo"}>{"Todo"}</SelectItem>
+                  <SelectItem value={"Doing"}>{"Doing"}</SelectItem>
+                  <SelectItem value={"Done"}>{"Done"}</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

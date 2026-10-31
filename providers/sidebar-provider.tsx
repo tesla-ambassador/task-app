@@ -6,7 +6,7 @@ import { type SidebarStore, createSidebarStore } from "@/store/sidebar-store";
 export type SidebarStoreApi = ReturnType<typeof createSidebarStore>;
 
 export const SidebarStoreContext = createContext<SidebarStoreApi | undefined>(
-  undefined,
+  undefined
 );
 
 interface SidebarStoreProviderProps {
@@ -27,8 +27,10 @@ export const SidebarStoreProvider = ({
   );
 };
 
+export const sidebarStore = createSidebarStore();
+
 export const useSidebarStore = <T,>(
-  selector: (store: SidebarStore) => T,
+  selector: (store: SidebarStore) => T
 ): T => {
   const sidebarStoreContext = useContext(SidebarStoreContext);
 

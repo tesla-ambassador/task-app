@@ -4,7 +4,7 @@
       "name": "Platform Launch",
       "columns": [
         {
-          "name": "Todo",
+          "name": "Builiding UI",
           "tasks": [
             {
               "title": "Build UI for onboarding flow",
@@ -69,7 +69,7 @@
           ]
         },
         {
-          "name": "Doing",
+          "name": "Designing",
           "tasks": [
             {
               "title": "Design settings and search pages",
@@ -180,7 +180,7 @@
           ]
         },
         {
-          "name": "Done",
+          "name": "Testing",
           "tasks": [
             {
               "title": "Conduct 5 wireframe tests",
@@ -287,7 +287,7 @@
       "name": "Marketing Plan",
       "columns": [
         {
-          "name": "Todo",
+          "name": "Planning",
           "tasks": [
             {
               "title": "Plan Product Hunt launch",

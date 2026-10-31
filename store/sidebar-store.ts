@@ -1,6 +1,6 @@
 import { createStore } from "zustand";
 import data from "@/data.json";
-import { Board, Column } from "@/types/boardtypes";
+import { Board, Column, Task } from "@/types/boardtypes";
 
 export type SidebarState = {
   isFullWidth: boolean;
@@ -36,7 +36,7 @@ export const createSidebarStore = (initState: SidebarState = defaultState) => {
     addColumn: (newColumn, boardName) =>
       set((state) => {
         const boardToAddTo = state.boards.find(
-          (board) => board.name === boardName,
+          (board) => board.name === boardName
         );
         if (!boardToAddTo) {
           return state;
@@ -46,7 +46,7 @@ export const createSidebarStore = (initState: SidebarState = defaultState) => {
           boards: state.boards.map((board) =>
             board === boardToAddTo
               ? { ...board, columns: [...board.columns, newColumn] }
-              : board,
+              : board
           ),
         };
       }),

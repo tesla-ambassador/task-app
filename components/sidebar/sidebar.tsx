@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import { useSidebarStore } from "@/providers/sidebar-provider";
 import { AddNewBoard } from "../board/add-new-board";
+import { useTaskStore } from "@/providers/task-provider";
 
 import {
   BoardIcon,
@@ -14,6 +15,8 @@ export function Sidebar() {
   const { boards, setActiveIndex, setFullWidth } = useSidebarStore(
     (state) => state
   );
+
+  const { columns } = useTaskStore((state) => state);
   return (
     <div className="w-full bg-white">
       <div className="w-full h-[100px] flex items-center px-6">

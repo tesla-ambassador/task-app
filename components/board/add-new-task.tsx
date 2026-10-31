@@ -52,7 +52,7 @@ const addNewTaskSchema = z.object({
   colName: z.string(),
 });
 
-const taskStatuses: string[] = ["To Do", "Doing", "Done"];
+const taskStatuses: string[] = ["Todo", "Doing", "Done"];
 const columnNames: string[] = ["Col 1", "Col 2", "Col 3", "Col 4"];
 
 export default function AddNewTaskDialog() {
@@ -110,7 +110,7 @@ export default function AddNewTaskDialog() {
       </DialogTrigger>
       <DialogTrigger
         disabled={boards[activeIndex].columns.length === 0 ? true : false}
-        className="rounded-full p-3 bg-[#635FC7] cursor-pointer hover:bg-[#A8A4FF]"
+        className="md:hidden rounded-full p-3 bg-[#635FC7] cursor-pointer hover:bg-[#A8A4FF]"
       >
         <AddNewTaskMobileIcon />
       </DialogTrigger>
